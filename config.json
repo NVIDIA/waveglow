@@ -10,7 +10,7 @@
         "checkpoint_path": ""
     },
     "data_config": {
-        "training_files":"train_filelist.txt",
+        "training_files":"train_files.txt",
         "segment_length": 16000,
         "sampling_rate": 22050,
         "filter_length": 1024,
