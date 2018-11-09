@@ -72,20 +72,21 @@ class Invertible1x1Conv(torch.nn.Module):
         # shape
         batch_size, group_size, n_of_groups = z.size()
 
-        # Compute log determinant
         W = self.conv.weight.squeeze()
-        log_det_W = batch_size * n_of_groups * torch.logdet(W)
 
         if reverse:
-            # Reverse computation
-            W_inverse = W.inverse()
-            W_inverse = Variable(W_inverse[..., None])
-            if z.type() == 'torch.cuda.HalfTensor':
-                W_inverse = W_inverse.half()
+            if not hasattr(self, 'W_inverse'):
+                # Reverse computation
+                W_inverse = W.inverse()
+                W_inverse = Variable(W_inverse[..., None])
+                if z.type() == 'torch.cuda.HalfTensor':
+                    W_inverse = W_inverse.half()
+                self.W_inverse = W_inverse
             z = F.conv1d(z, W_inverse, bias=None, stride=1, padding=0)
             return z
         else:
             # Forward computation
+            log_det_W = batch_size * n_of_groups * torch.logdet(W)
             z = self.conv(z)
             return z, log_det_W
 
