@@ -1,7 +1,9 @@
 ![WaveGlow](waveglow_logo.png "WaveGLow")
 
 ## WaveGlow: a Flow-based Generative Network for Speech Synthesis
+
 ### Ryan Prenger, Rafael Valle, and Bryan Catanzaro
+
 In our recent [paper], we propose WaveGlow: a flow-based network capable
 of generating high quality speech from mel-spectrograms. WaveGlow
 combines insights from [Glow] and [WaveNet] in order to provide fast,
@@ -19,39 +21,53 @@ implementation.
 Visit our [website] for audio samples.
 
 ## Setup
+
 1. Clone our repo and initialize submodule
-```
-git clone https://github.com/NVIDIA/waveglow.git
-git submodule init
-git submodule update
-```
+
+   ```command
+   git clone https://github.com/NVIDIA/waveglow.git
+   git submodule init
+   git submodule update
+   ```
+
 2. Install requirements (same as those from submodule) `pip3 install -r tacotron2/requirements.txt`
 
 ## Generate audio with our pre-existing model
+
 1. Download our [published model]
 2. Download [mel-spectrograms]
 3. Generate audio `python3 inference.py -f <(ls mel_spectrograms/*.pt) -w waveglow_old.pt -o . --is_fp16 -s 0.6`
 
 ## Train your own model
+
 1. Download [LJ Speech Data]. In this example it's in `data/`
+
 2. Make a list of the file names to use for training/testing
-```
-ls data/*.wav | tail -n+10 > train_files.txt
-ls data/*.wav | head -n10 > test_files.txt
-```
-4. Train your WaveGlow networks
-```
-mkdir checkpoints
-python train.py -c config.json
-```
-For multi-GPU training replace `train.py` with `distributed.py`.  Only tested with single node and NCCL.
-5. Make test set mel-spectrograms  
-`python mel2samp.py -f test_files.txt -o . -c config.json`
-6. Do inference with your network
-```
-ls *.pt > mel_files.txt
-python3 inference.py -f mel_files.txt -w checkpoints/waveglow_10000 -o . --is_fp16 -s 0.6
-```
+
+   ```command
+   ls data/*.wav | tail -n+10 > train_files.txt
+   ls data/*.wav | head -n10 > test_files.txt
+   ```
+
+3. Train your WaveGlow networks
+
+   ```command
+   mkdir checkpoints
+   python train.py -c config.json
+   ```
+
+   For multi-GPU training replace `train.py` with `distributed.py`.  Only tested with single node and NCCL.
+
+4. Make test set mel-spectrograms
+
+   `python mel2samp.py -f test_files.txt -o . -c config.json`
+
+5. Do inference with your network
+
+   ```command
+   ls *.pt > mel_files.txt
+   python3 inference.py -f mel_files.txt -w checkpoints/waveglow_10000 -o . --is_fp16 -s 0.6
+   ```
 
 [//]: # (TODO)
 [//]: # (PROVIDE INSTRUCTIONS FOR DOWNLOADING LJS)
