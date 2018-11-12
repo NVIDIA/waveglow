@@ -26,6 +26,7 @@ Visit our [website] for audio samples.
 
    ```command
    git clone https://github.com/NVIDIA/waveglow.git
+   cd waveglow
    git submodule init
    git submodule update
    ```
