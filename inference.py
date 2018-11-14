@@ -25,16 +25,15 @@
 #
 # *****************************************************************************
 import os
-import numpy as np
 from scipy.io.wavfile import write
 import torch
 from mel2samp import files_to_list, MAX_WAV_VALUE
-from glow import remove_weightnorm
+
 
 def main(mel_files, waveglow_path, sigma, output_dir, sampling_rate, is_fp16):
     mel_files = files_to_list(mel_files)
     waveglow = torch.load(waveglow_path)['model']
-    waveglow = remove_weightnorm(waveglow)
+    waveglow = waveglow.remove_weightnorm(waveglow)
     waveglow.cuda().eval()
     if is_fp16:
         waveglow.half()
