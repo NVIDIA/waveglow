@@ -31,7 +31,7 @@ Visit our [website] for audio samples.
    git submodule update
    ```
 
-2. Install requirements (same as those from submodule) `pip3 install -r tacotron2/requirements.txt`
+2. Install requirements (pytorch 1.0 and others) `pip3 install -r requirements.txt`
 
 ## Generate audio with our pre-existing model
 
