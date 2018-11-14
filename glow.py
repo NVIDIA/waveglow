@@ -1,4 +1,4 @@
-# *****************************************************************************
+#*****************************************************************************
 #  Copyright (c) 2018, NVIDIA CORPORATION.  All rights reserved.
 #
 #  Redistribution and use in source and binary forms, with or without
@@ -283,7 +283,7 @@ class WaveGlow(torch.nn.Module):
         return audio
 
 def remove_weightnorm(self):
-    waveglow = copy.deepcopy(self)
+    waveglow = self
     for WN in waveglow.WN:
         WN.start = torch.nn.utils.remove_weight_norm(WN.start)
         WN.in_layers = remove(WN.in_layers)
