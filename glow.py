@@ -282,14 +282,14 @@ class WaveGlow(torch.nn.Module):
         audio = audio.permute(0,2,1).contiguous().view(audio.size(0), -1).data
         return audio
 
-    def remove_weightnorm(self):
-        waveglow = copy.deepcopy(self)
-        for WN in waveglow.WN:
-            WN.start = torch.nn.utils.remove_weight_norm(WN.start)
-            WN.in_layers = remove(WN.in_layers)
-            WN.cond_layers = remove(WN.cond_layers)
-            WN.res_skip_layers = remove(WN.res_skip_layers)
-        self = waveglow
+def remove_weightnorm(self):
+    waveglow = copy.deepcopy(self)
+    for WN in waveglow.WN:
+        WN.start = torch.nn.utils.remove_weight_norm(WN.start)
+        WN.in_layers = remove(WN.in_layers)
+        WN.cond_layers = remove(WN.cond_layers)
+        WN.res_skip_layers = remove(WN.res_skip_layers)
+    return waveglow
 
 def remove(conv_list):
     new_conv_list = torch.nn.ModuleList()
