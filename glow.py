@@ -106,7 +106,6 @@ class WN(torch.nn.Module):
         self.n_channels = n_channels
         self.in_layers = torch.nn.ModuleList()
         self.res_skip_layers = torch.nn.ModuleList()
-        self.skip_layers = torch.nn.ModuleList()
         self.cond_layers = torch.nn.ModuleList()
 
         start = torch.nn.Conv1d(n_in_channels, n_channels, 1)
@@ -140,10 +139,6 @@ class WN(torch.nn.Module):
             res_skip_layer = torch.nn.Conv1d(n_channels, res_skip_channels, 1)
             res_skip_layer = torch.nn.utils.weight_norm(res_skip_layer, name='weight')
             self.res_skip_layers.append(res_skip_layer)
-
-            skip_layer = torch.nn.Conv1d(n_channels, n_channels, 1)
-            skip_layer = torch.nn.utils.weight_norm(skip_layer, name='weight')
-            self.skip_layers.append(skip_layer)
 
     def forward(self, forward_input):
         audio, spect = forward_input
