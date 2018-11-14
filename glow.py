@@ -29,6 +29,17 @@ import torch
 from torch.autograd import Variable
 import torch.nn.functional as F
 
+
+@torch.jit.script
+def fused_add_tanh_sigmoid_multiply(input_a, input_b, n_channels):
+    n_channels_int = n_channels[0]
+    in_act = input_a+input_b
+    t_act = torch.nn.functional.tanh(in_act[:, :n_channels_int, :])
+    s_act = torch.nn.functional.sigmoid(in_act[:, n_channels_int:, :])
+    acts = t_act * s_act
+    return acts
+
+
 class WaveGlowLoss(torch.nn.Module):
     def __init__(self, sigma=1.0):
         super(WaveGlowLoss, self).__init__()
@@ -145,12 +156,10 @@ class WN(torch.nn.Module):
         audio = self.start(audio)
 
         for i in range(self.n_layers):
-            in_act = self.in_layers[i](audio)
-            in_act = in_act + self.cond_layers[i](spect)
-
-            t_act = torch.nn.functional.tanh(in_act[:, :self.n_channels, :])
-            s_act = torch.nn.functional.sigmoid(in_act[:, self.n_channels:, :])
-            acts = t_act * s_act
+            acts = fused_add_tanh_sigmoid_multiply(
+                self.in_layers[i](audio),
+                self.cond_layers[i](spect),
+                torch.IntTensor([self.n_channels]))
 
             res_skip_acts = self.res_skip_layers[i](acts)
             if i < self.n_layers - 1:
