@@ -29,6 +29,17 @@ import torch
 from torch.autograd import Variable
 import torch.nn.functional as F
 
+
+@torch.jit.script
+def fused_add_tanh_sigmoid_multiply(input_a, input_b, n_channels):
+    n_channels_int = n_channels[0]
+    in_act = input_a+input_b
+    t_act = torch.nn.functional.tanh(in_act[:, :n_channels_int, :])
+    s_act = torch.nn.functional.sigmoid(in_act[:, n_channels_int:, :])
+    acts = t_act * s_act
+    return acts
+
+
 class WaveGlowLoss(torch.nn.Module):
     def __init__(self, sigma=1.0):
         super(WaveGlowLoss, self).__init__()
@@ -145,12 +156,10 @@ class WN(torch.nn.Module):
         audio = self.start(audio)
 
         for i in range(self.n_layers):
-            in_act = self.in_layers[i](audio)
-            in_act = in_act + self.cond_layers[i](spect)
-
-            t_act = torch.nn.functional.tanh(in_act[:, :self.n_channels, :])
-            s_act = torch.nn.functional.sigmoid(in_act[:, self.n_channels:, :])
-            acts = t_act * s_act
+            acts = fused_add_tanh_sigmoid_multiply(
+                self.in_layers[i](audio),
+                self.cond_layers[i](spect),
+                torch.IntTensor([self.n_channels]))
 
             res_skip_acts = self.res_skip_layers[i](acts)
             if i < self.n_layers - 1:
@@ -282,14 +291,15 @@ class WaveGlow(torch.nn.Module):
         audio = audio.permute(0,2,1).contiguous().view(audio.size(0), -1).data
         return audio
 
-def remove_weightnorm(self):
-    waveglow = self
-    for WN in waveglow.WN:
-        WN.start = torch.nn.utils.remove_weight_norm(WN.start)
-        WN.in_layers = remove(WN.in_layers)
-        WN.cond_layers = remove(WN.cond_layers)
-        WN.res_skip_layers = remove(WN.res_skip_layers)
-    return waveglow
+    @staticmethod
+    def remove_weightnorm(model):
+        waveglow = model
+        for WN in waveglow.WN:
+            WN.start = torch.nn.utils.remove_weight_norm(WN.start)
+            WN.in_layers = remove(WN.in_layers)
+            WN.cond_layers = remove(WN.cond_layers)
+            WN.res_skip_layers = remove(WN.res_skip_layers)
+        return waveglow
 
 def remove(conv_list):
     new_conv_list = torch.nn.ModuleList()
