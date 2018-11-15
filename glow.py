@@ -293,7 +293,7 @@ class WaveGlow(torch.nn.Module):
 
     @staticmethod
     def remove_weightnorm(model):
-        waveglow = model
+        waveglow = copy.deepcopy(model)
         for WN in waveglow.WN:
             WN.start = torch.nn.utils.remove_weight_norm(WN.start)
             WN.in_layers = remove(WN.in_layers)

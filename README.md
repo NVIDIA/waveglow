@@ -37,7 +37,8 @@ Visit our [website] for audio samples.
 
 1. Download our [published model]
 2. Download [mel-spectrograms]
-3. Generate audio `python3 inference.py -f <(ls mel_spectrograms/*.pt) -w waveglow_old.pt -o . --is_fp16 -s 0.6`
+3. Convert the model to the current WaveGlow model format: `python3 convert_model.py waveglow_old.py waveglow_new.pt`
+4. Generate audio `python3 inference.py -f <(ls mel_spectrograms/*.pt) -w waveglow_new.pt -o . --is_fp16 -s 0.6`
 
 ## Train your own model
 

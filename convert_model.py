@@ -11,7 +11,7 @@ def _check_model_old_version(model):
 def update_model(old_model):
     if not _check_model_old_version(old_model):
         return old_model
-    new_model = old_model
+    new_model = copy.deepcopy(old_model)
     for idx in range(0, len(new_model.WN)):
         wavenet = new_model.WN[idx]
         wavenet.res_skip_layers = torch.nn.ModuleList()
