@@ -4,19 +4,17 @@
 
 ### Ryan Prenger, Rafael Valle, and Bryan Catanzaro
 
-In our recent [paper], we propose WaveGlow: a flow-based network capable
-of generating high quality speech from mel-spectrograms. WaveGlow
-combines insights from [Glow] and [WaveNet] in order to provide fast,
-efficient and high-quality audio synthesis, without the need for
-auto-regression. WaveGlow is implemented using only a single network,
-trained using only a single cost function: maximizing the likelihood of
-the training data, which makes the training procedure simple and
-stable.
+In our recent [paper], we propose WaveGlow: a flow-based network capable of
+generating high quality speech from mel-spectrograms. WaveGlow combines insights
+from [Glow] and [WaveNet] in order to provide fast, efficient and high-quality
+audio synthesis, without the need for auto-regression. WaveGlow is implemented
+using only a single network, trained using only a single cost function:
+maximizing the likelihood of the training data, which makes the training
+procedure simple and stable.
 
-Our [PyTorch] implementation produces audio samples at a rate of more than
-500 kHz on an NVIDIA V100 GPU and Mean Opinion Scores show that it delivers
-audio quality as good as the best publicly available WaveNet
-implementation.
+Our [PyTorch] implementation produces audio samples at a rate of more than 12000
+kHz on an NVIDIA V100 GPU and Mean Opinion Scores show that it delivers audio
+quality as good as the best publicly available WaveNet implementation.
 
 Visit our [website] for audio samples.
 
@@ -38,6 +36,7 @@ Visit our [website] for audio samples.
 1. Download our [published model]
 2. Download [mel-spectrograms]
 3. Generate audio `python3 inference.py -f <(ls mel_spectrograms/*.pt) -w waveglow_old.pt -o . --is_fp16 -s 0.6`
+N.b. use convert_model.py to convert your older models to the current model
 
 ## Train your own model
 
