@@ -28,6 +28,8 @@ import copy
 import torch
 from torch.autograd import Variable
 import torch.nn.functional as F
+from operator import mul
+from functools import reduce
 
 
 @torch.jit.script
@@ -47,16 +49,11 @@ class WaveGlowLoss(torch.nn.Module):
 
     def forward(self, model_output):
         z, log_s_list, log_det_W_list = model_output
-        for i, log_s in enumerate(log_s_list):
-            if i == 0:
-                log_s_total = torch.sum(log_s)
-                log_det_W_total = log_det_W_list[i]
-            else:
-                log_s_total = log_s_total + torch.sum(log_s)
-                log_det_W_total += log_det_W_list[i]
+        log_s_total = sum(log_s.sum() for log_s in log_s_list)
+        log_det_W_total = sum(log_det_W_list)
 
-        loss = torch.sum(z*z)/(2*self.sigma*self.sigma) - log_s_total - log_det_W_total
-        return loss/(z.size(0)*z.size(1)*z.size(2))
+        loss = torch.sum(z ** 2)/(2 * self.sigma ** 2) - log_s_total - log_det_W_total
+        return loss / reduce(mul, z.shape)
 
 
 class Invertible1x1Conv(torch.nn.Module):
