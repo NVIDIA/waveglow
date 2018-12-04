@@ -12,7 +12,7 @@ using only a single network, trained using only a single cost function:
 maximizing the likelihood of the training data, which makes the training
 procedure simple and stable.
 
-Our [PyTorch] implementation produces audio samples at a rate of 2750  
+Our [PyTorch] implementation produces audio samples at a rate of 2750
 kHz on an NVIDIA V100 GPU. Mean Opinion Scores show that it delivers audio
 quality as good as the best publicly available WaveNet implementation.
 
