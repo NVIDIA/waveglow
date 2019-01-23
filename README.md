@@ -29,9 +29,7 @@ Visit our [website] for audio samples.
    git submodule update
    ```
 
-2. Install [PyTorch 1.0]  
-
-3. Install other requirements `pip3 install -r requirements.txt`
+2. Install requirements `pip3 install -r requirements.txt`
 
 ## Generate audio with our pre-existing model
 
