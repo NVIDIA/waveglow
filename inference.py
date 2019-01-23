@@ -32,9 +32,9 @@ from mel2samp import files_to_list, MAX_WAV_VALUE
 
 def main(mel_files, waveglow_path, sigma, output_dir, sampling_rate, is_fp16):
     mel_files = files_to_list(mel_files)
-    waveglow = torch.load(waveglow_path)['model']
+    waveglow = torch.load(waveglow_path, map_location=lambda storage, loc: storage)['model']
     waveglow = waveglow.remove_weightnorm(waveglow)
-    waveglow.cuda().eval()
+    waveglow.eval()
     if is_fp16:
         waveglow.half()
         for k in waveglow.convinv:
@@ -43,7 +43,7 @@ def main(mel_files, waveglow_path, sigma, output_dir, sampling_rate, is_fp16):
     for i, file_path in enumerate(mel_files):
         file_name = os.path.splitext(os.path.basename(file_path))[0]
         mel = torch.load(file_path)
-        mel = torch.autograd.Variable(mel.cuda())
+        mel = torch.autograd.Variable(mel)
         mel = torch.unsqueeze(mel, 0)
         mel = mel.half() if is_fp16 else mel
         with torch.no_grad():
