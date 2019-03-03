@@ -35,14 +35,27 @@ from torch.utils.data.distributed import DistributedSampler
 #=====END:   ADDED FOR DISTRIBUTED======
 
 from torch.utils.data import DataLoader
-from glow import WaveGlow, WaveGlowLoss
+if 'OLD_GLOW' in os.environ and os.environ['OLD_GLOW'] == '1':
+    print("Warning! Using old_glow.py instead of glow.py for training")
+    from glow_old import WaveGlow
+else:
+    from glow import WaveGlow
+
+from glow import WaveGlowLoss
 from mel2samp import Mel2Samp
 
 def load_checkpoint(checkpoint_path, model, optimizer):
     assert os.path.isfile(checkpoint_path)
     checkpoint_dict = torch.load(checkpoint_path, map_location='cpu')
-    iteration = checkpoint_dict['iteration']
-    optimizer.load_state_dict(checkpoint_dict['optimizer'])
+
+    if 'iteration' in checkpoint_dict:
+        iteration = checkpoint_dict['iteration']
+    else:
+        iteration = 0
+    
+    if 'optimizer' in checkpoint_dict:
+        optimizer.load_state_dict(checkpoint_dict['optimizer'])
+
     model_for_loading = checkpoint_dict['model']
     model.load_state_dict(model_for_loading.state_dict())
     print("Loaded checkpoint '{}' (iteration {})" .format(

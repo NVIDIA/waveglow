@@ -116,11 +116,9 @@ class WaveGlow(torch.nn.Module):
         self.n_remaining_channels = n_remaining_channels  # Useful during inference
 
     def forward(self, forward_input):
-        return None
         """
-        forward_input[0] = audio: batch x time
-        forward_input[1] = upsamp_spectrogram:  batch x n_cond_channels x time
-        """
+        forward_input[0] = mel_spectrogram:  batch x n_mel_channels x frames
+        forward_input[1] = audio: batch x time
         """
         spect, audio = forward_input
 
@@ -135,19 +133,19 @@ class WaveGlow(torch.nn.Module):
 
         audio = audio.unfold(1, self.n_group, self.n_group).permute(0, 2, 1)
         output_audio = []
-        s_list = []
-        s_conv_list = []
+        log_s_list = []
+        log_det_W_list = []
 
         for k in range(self.n_flows):
-            if k%4 == 0 and k > 0:
-                output_audio.append(audio[:,:self.n_multi,:])
-                audio = audio[:,self.n_multi:,:]
+            if k % self.n_early_every == 0 and k > 0:
+                output_audio.append(audio[:,:self.n_early_size,:])
+                audio = audio[:,self.n_early_size:,:]
 
-            # project to new basis
-            audio, s = self.convinv[k](audio)
-            s_conv_list.append(s)
+            audio, log_det_W = self.convinv[k](audio)
+            log_det_W_list.append(log_det_W)
 
             n_half = int(audio.size(1)/2)
+
             if k%2 == 0:
                 audio_0 = audio[:,:n_half,:]
                 audio_1 = audio[:,n_half:,:]
@@ -155,19 +153,20 @@ class WaveGlow(torch.nn.Module):
                 audio_1 = audio[:,:n_half,:]
                 audio_0 = audio[:,n_half:,:]
 
-            output = self.nn[k]((audio_0, spect))
-            s = output[:, n_half:, :]
+            output = self.WN[k]((audio_0, spect))
+            log_s = output[:, n_half:, :]
             b = output[:, :n_half, :]
-            audio_1 = torch.exp(s)*audio_1 + b
-            s_list.append(s)
+            audio_1 = torch.exp(log_s)*audio_1 + b
+            log_s_list.append(log_s)
 
-            if k%2 == 0:
-                audio = torch.cat([audio[:,:n_half,:], audio_1],1)
-            else:
-                audio = torch.cat([audio_1, audio[:,n_half:,:]], 1)
+            if k%2 != 0:
+                audio_0, audio_1 = audio_1, audio_0
+
+            audio = torch.cat([audio_0, audio_1],1)
+
         output_audio.append(audio)
-        return torch.cat(output_audio,1), s_list, s_conv_list
-        """
+        return torch.cat(output_audio,1), log_s_list, log_det_W_list
+
 
     def infer(self, spect, sigma=1.0):
         spect = self.upsample(spect)
