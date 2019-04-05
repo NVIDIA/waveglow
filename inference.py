@@ -38,9 +38,8 @@ def main(mel_files, waveglow_path, sigma, output_dir, sampling_rate, is_fp16,
     waveglow = waveglow.remove_weightnorm(waveglow)
     waveglow.cuda().eval()
     if is_fp16:
-        waveglow.half()
-        for k in waveglow.convinv:
-            k.float()
+        from apex import amp
+        waveglow, _ = amp.initialize(waveglow, [], opt_level="O3")
 
     if denoiser_strength > 0:
         denoiser = Denoiser(waveglow).cuda()
