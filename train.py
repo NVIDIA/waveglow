@@ -60,7 +60,8 @@ def save_checkpoint(model, optimizer, learning_rate, iteration, filepath):
                 'learning_rate': learning_rate}, filepath)
 
 def train(num_gpus, rank, group_name, output_directory, epochs, learning_rate,
-          sigma, iters_per_checkpoint, batch_size, seed, checkpoint_path):
+          sigma, iters_per_checkpoint, batch_size, seed, fp16_run,
+          checkpoint_path):
     torch.manual_seed(seed)
     torch.cuda.manual_seed(seed)
     #=====START: ADDED FOR DISTRIBUTED======
@@ -77,6 +78,10 @@ def train(num_gpus, rank, group_name, output_directory, epochs, learning_rate,
     #=====END:   ADDED FOR DISTRIBUTED======
 
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+
+    if fp16_run:
+        from apex import amp
+        model, optimizer = amp.initialize(model, optimizer, opt_level='O1')
 
     # Load checkpoint if one exists
     iteration = 0
@@ -120,7 +125,13 @@ def train(num_gpus, rank, group_name, output_directory, epochs, learning_rate,
                 reduced_loss = reduce_tensor(loss.data, num_gpus).item()
             else:
                 reduced_loss = loss.item()
-            loss.backward()
+
+            if fp16_run:
+                with amp.scale_loss(loss, optimizer) as scaled_loss:
+                     scaled_loss.backward()
+            else:
+                loss.backward()
+
             optimizer.step()
 
             print("{}:\t{:.9f}".format(iteration, reduced_loss))
