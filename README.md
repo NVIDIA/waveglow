@@ -64,7 +64,7 @@ with fused residual and skip connections.
 
    For multi-GPU training replace `train.py` with `distributed.py`.  Only tested with single node and NCCL.
 
-   For mixed precision training set `"fp16_run": true` on config.json.
+   For mixed precision training set `"fp16_run": true` on `config.json`.
 
 4. Make test set mel-spectrograms
 
