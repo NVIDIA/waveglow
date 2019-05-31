@@ -31,11 +31,14 @@ Visit our [website] for audio samples.
 
 2. Install requirements `pip3 install -r requirements.txt`
 
+3. Install [Apex]
+
+
 ## Generate audio with our pre-existing model
 
 1. Download our [published model]
 2. Download [mel-spectrograms]
-3. Generate audio `python3 inference.py -f <(ls mel_spectrograms/*.pt) -w waveglow_old.pt -o . --is_fp16 -s 0.6`  
+3. Generate audio `python3 inference.py -f <(ls mel_spectrograms/*.pt) -w waveglow_256channels.pt -o . --is_fp16 -s 0.6`  
 
 N.b. use `convert_model.py` to convert your older models to the current model
 with fused residual and skip connections.
@@ -60,6 +63,8 @@ with fused residual and skip connections.
 
    For multi-GPU training replace `train.py` with `distributed.py`.  Only tested with single node and NCCL.
 
+   For mixed precision training set `"fp16_run": true` on `config.json`.
+
 4. Make test set mel-spectrograms
 
    `python mel2samp.py -f test_files.txt -o . -c config.json`
@@ -80,6 +85,7 @@ with fused residual and skip connections.
 [Glow]: https://blog.openai.com/glow/
 [WaveNet]: https://deepmind.com/blog/wavenet-generative-model-raw-audio/
 [PyTorch]: http://pytorch.org
-[published model]: https://drive.google.com/file/d/1cjKPHbtAMh_4HTHmuIGNkbOkPBD9qwhj/view?usp=sharing
+[published model]: https://drive.google.com/file/d/1WsibBTsuRg_SF2Z6L6NFRTT-NjEy1oTx/view?usp=sharing
 [mel-spectrograms]: https://drive.google.com/file/d/1g_VXK2lpP9J25dQFhQwx7doWl_p20fXA/view?usp=sharing
 [LJ Speech Data]: https://keithito.com/LJ-Speech-Dataset
+[Apex]: https://github.com/nvidia/apex

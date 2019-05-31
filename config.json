@@ -1,16 +1,18 @@
 {
     "train_config": {
+        "fp16_run": true,
         "output_directory": "checkpoints",
         "epochs": 100000,
         "learning_rate": 1e-4,
         "sigma": 1.0,
         "iters_per_checkpoint": 2000,
-        "batch_size": 3,
+        "batch_size": 12,
         "seed": 1234,
-        "checkpoint_path": ""
+        "checkpoint_path": "",
+        "with_tensorboard": false
     },
     "data_config": {
-        "training_files":"train_files.txt",
+        "training_files": "train_files.txt",
         "segment_length": 16000,
         "sampling_rate": 22050,
         "filter_length": 1024,
@@ -32,7 +34,7 @@
         "n_early_size": 2,
         "WN_config": {
             "n_layers": 8,
-            "n_channels": 512,
+            "n_channels": 256,
             "kernel_size": 3
         }
     }
