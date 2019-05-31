@@ -8,7 +8,8 @@
         "iters_per_checkpoint": 2000,
         "batch_size": 12,
         "seed": 1234,
-        "checkpoint_path": ""
+        "checkpoint_path": "",
+        "with_tensorboard": false
     },
     "data_config": {
         "training_files": "train_files.txt",
