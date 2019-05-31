@@ -39,7 +39,7 @@ Visit our [website] for audio samples.
 
 1. Download our [published model]
 2. Download [mel-spectrograms]
-3. Generate audio `python3 inference.py -f <(ls mel_spectrograms/*.pt) -w waveglow_old.pt -o . --is_fp16 -s 0.6`  
+3. Generate audio `python3 inference.py -f <(ls mel_spectrograms/*.pt) -w waveglow_256channels.pt -o . --is_fp16 -s 0.6`  
 
 N.b. use `convert_model.py` to convert your older models to the current model
 with fused residual and skip connections.
