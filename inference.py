@@ -33,6 +33,7 @@ from denoiser import Denoiser
 
 def main(mel_files, waveglow_path, sigma, output_dir, sampling_rate, is_fp16,
          denoiser_strength):
+    os.makedirs(output_dir, exist_ok=True)
     mel_files = files_to_list(mel_files)
     waveglow = torch.load(waveglow_path)['model']
     waveglow = waveglow.remove_weightnorm(waveglow)
