@@ -35,7 +35,7 @@ from torch.utils.data.distributed import DistributedSampler
 #=====END:   ADDED FOR DISTRIBUTED======
 
 from torch.utils.data import DataLoader
-if 'OLD_GLOW' in os.environ and os.environ['OLD_GLOW'] == '1':
+if os.getenv('OLD_GLOW') == '1':
     print("Warning! Using old_glow.py instead of glow.py for training")
     from glow_old import WaveGlow
 else:
