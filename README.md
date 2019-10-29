@@ -12,7 +12,7 @@ using only a single network, trained using only a single cost function:
 maximizing the likelihood of the training data, which makes the training
 procedure simple and stable.
 
-Our [PyTorch] implementation produces audio samples at a rate of 2750
+Our [PyTorch] implementation produces audio samples at a rate of 4850
 kHz on an NVIDIA V100 GPU. Mean Opinion Scores show that it delivers audio
 quality as good as the best publicly available WaveNet implementation.
 
@@ -85,7 +85,7 @@ with fused residual and skip connections.
 [Glow]: https://blog.openai.com/glow/
 [WaveNet]: https://deepmind.com/blog/wavenet-generative-model-raw-audio/
 [PyTorch]: http://pytorch.org
-[published model]: https://drive.google.com/file/d/1WsibBTsuRg_SF2Z6L6NFRTT-NjEy1oTx/view?usp=sharing
+[published model]: https://ngc.nvidia.com/catalog/models/nvidia:waveglow_ljs_256channels
 [mel-spectrograms]: https://drive.google.com/file/d/1g_VXK2lpP9J25dQFhQwx7doWl_p20fXA/view?usp=sharing
 [LJ Speech Data]: https://keithito.com/LJ-Speech-Dataset
 [Apex]: https://github.com/nvidia/apex
