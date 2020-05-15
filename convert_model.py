@@ -66,7 +66,7 @@ def update_model(old_model):
 if __name__ == '__main__':
     old_model_path = sys.argv[1]
     new_model_path = sys.argv[2]
-    model = torch.load(old_model_path)
+    model = torch.load(old_model_path, map_location='cpu')
     model['model'] = update_model(model['model'])
     torch.save(model, new_model_path)
     
