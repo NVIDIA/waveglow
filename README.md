@@ -85,7 +85,7 @@ with fused residual and skip connections.
 [Glow]: https://blog.openai.com/glow/
 [WaveNet]: https://deepmind.com/blog/wavenet-generative-model-raw-audio/
 [PyTorch]: http://pytorch.org
-[published model]: https://ngc.nvidia.com/catalog/models/nvidia:waveglow_ljs_256channels
+[published model]: https://drive.google.com/open?id=1rpK8CzAAirq9sWZhe9nlfvxMF1dRgFbF
 [mel-spectrograms]: https://drive.google.com/file/d/1g_VXK2lpP9J25dQFhQwx7doWl_p20fXA/view?usp=sharing
 [LJ Speech Data]: https://keithito.com/LJ-Speech-Dataset
 [Apex]: https://github.com/nvidia/apex
