@@ -2,6 +2,7 @@ import torch
 from torch.hub import load_state_dict_from_url
 
 from .glow import WaveGlow
+from .denoiser import Denoiser
 
 _model = None
 
@@ -19,7 +20,8 @@ _model_config = dict(n_mel_channels=80,
 def synthesize(mel: torch.Tensor,
                device='cuda',
                is_fp16: bool = False,
-               sigma: float = 1.0) -> torch.Tensor:
+               sigma: float = 1.0,
+               denoiser_strength: float = 0.0) -> torch.Tensor:
     global _model
     if _model is None:
         _model = WaveGlow(**_model_config)
@@ -34,9 +36,14 @@ def synthesize(mel: torch.Tensor,
             from apex import amp
             _model, _ = amp.initialize(_model, [], opt_level="O3")
 
+    if denoiser_strength > 0:
+        denoiser = Denoiser(waveglow).to(device)
+
     mel = mel.to(device)
     mel = mel.half() if is_fp16 else mel
 
     audio = _model.infer(mel, sigma=sigma)
+    if denoiser_strength > 0:
+        audio = denoiser(audio, denoiser_strength)
 
     return audio.cpu()
