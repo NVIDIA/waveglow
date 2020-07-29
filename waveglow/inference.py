@@ -37,7 +37,7 @@ def synthesize(mel: torch.Tensor,
             _model, _ = amp.initialize(_model, [], opt_level="O3")
 
     if denoiser_strength > 0:
-        denoiser = Denoiser(waveglow).to(device)
+        denoiser = Denoiser(_model).to(device)
 
     mel = mel.to(device)
     mel = mel.half() if is_fp16 else mel
