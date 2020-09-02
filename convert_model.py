@@ -61,6 +61,9 @@ def update_model(old_model):
         _update_model_res_skip(old_model, new_model)
     if hasattr(old_model.WN[0], 'cond_layers'):
         _update_model_cond(old_model, new_model)
+    for m in new_model.modules():
+        if 'Conv' in str(type(m)) and not hasattr(m, 'padding_mode'):
+            setattr(m, 'padding_mode', 'zeros')        
     return new_model
 
 if __name__ == '__main__':
