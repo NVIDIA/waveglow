@@ -171,7 +171,11 @@ if __name__ == "__main__":
     global dist_config
     dist_config = config["dist_config"]
     global waveglow_config
-    waveglow_config = config["waveglow_config"]
+    waveglow_config = { 
+        **config["waveglow_config"], 
+        'win_length': data_config['win_length'],
+        'hop_length': data_config['hop_length']
+    }
 
     num_gpus = torch.cuda.device_count()
     if num_gpus > 1:
