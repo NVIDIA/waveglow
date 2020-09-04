@@ -76,6 +76,30 @@ with fused residual and skip connections.
    python3 inference.py -f mel_files.txt -w checkpoints/waveglow_10000 -o . --is_fp16 -s 0.6
    ```
 
+## Finetuning the official checkpoint with your own data
+
+The "official" checkpoint above was trained using an older version of the code.
+Therefore, you need to use `glow_old.py` to continue training from the official
+checkpoint:
+
+1. Download our [published model]
+2. Update the checkpoint to comply with recent code modifications:
+
+   `python convert_model.py waveglow_old.pt waveglow_old_updated.pt`
+
+3. Perform steps 1 and 2 from the section above
+
+4. Set `"checkpoint_path": "./waveglow_old_updated.pt"` in `config.json`
+
+5. Train your WaveGlow networks with `OLD_GLOW=1` (not yet tested with
+   `distributed.py`) 
+
+   ```command
+   mkdir checkpoints
+   OLD_GLOW=1 python train.py -c config.json
+   ```
+
+
 [//]: # (TODO)
 [//]: # (PROVIDE INSTRUCTIONS FOR DOWNLOADING LJS)
 [pytorch 1.0]: https://github.com/pytorch/pytorch#installation
