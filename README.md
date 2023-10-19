@@ -23,10 +23,8 @@ Visit our [website] for audio samples.
 1. Clone our repo and initialize submodule
 
    ```command
-   git clone https://github.com/NVIDIA/waveglow.git
+   git clone https://github.com/NVIDIA/waveglow.git --recurse-submodules
    cd waveglow
-   git submodule init
-   git submodule update
    ```
 
 2. Install requirements `pip3 install -r requirements.txt`
